@@ -23,6 +23,13 @@ class Comment
     #[ORM\Column(length: 255)]
     private ?string $content = null;
 
+    #[ORM\ManyToOne(inversedBy: 'comments')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Book $book = null;
+
+    #[ORM\ManyToOne]
+    private ?User $user_id = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -60,6 +67,30 @@ class Comment
     public function setContent(string $content): static
     {
         $this->content = $content;
+
+        return $this;
+    }
+
+    public function getBook(): ?Book
+    {
+        return $this->book;
+    }
+
+    public function setBook(?Book $book): static
+    {
+        $this->book = $book;
+
+        return $this;
+    }
+
+    public function getUserId(): ?User
+    {
+        return $this->user_id;
+    }
+
+    public function setUserId(?User $user_id): static
+    {
+        $this->user_id = $user_id;
 
         return $this;
     }

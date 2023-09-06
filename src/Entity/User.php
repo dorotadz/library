@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -29,6 +31,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     private ?string $password = null;
+
+    #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: Lendings::class)]
+    private Collection $lendings;
+
+
+    public function __construct()
+    {
+        $this->lendings = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -98,5 +109,40 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    /**
+     * @return Collection<int, Lendings>
+     */
+    public function getLendings(): Collection
+    {
+        return $this->lendings;
+    }
+
+    public function addLending(Lendings $lending): static
+    {
+        if (!$this->lendings->contains($lending)) {
+            $this->lendings->add($lending);
+            $lending->setUserId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLending(Lendings $lending): static
+    {
+        if ($this->lendings->removeElement($lending)) {
+            // set the owning side to null (unless already changed)
+            if ($lending->getUserId() === $this) {
+                $lending->setUserId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->getEmail();
     }
 }

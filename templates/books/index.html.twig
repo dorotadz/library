@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Books Page
+{% endblock %}
+
+{% block body %}
+
+    {% for book in books %}
+        <li> {{book}} </li>
+    {% endfor %}
+{% endblock %}

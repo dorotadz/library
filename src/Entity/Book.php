@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\BookRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
@@ -36,6 +38,25 @@ class Book
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $language = null;
+
+    #[ORM\OneToMany(mappedBy: 'book', targetEntity: Comment::class, orphanRemoval: true)]
+    private Collection $comments;
+
+    #[ORM\OneToMany(mappedBy: 'book', targetEntity: Lendings::class, orphanRemoval: true)]
+    private Collection $lendings;
+
+    #[ORM\ManyToOne(inversedBy: 'books')]
+    private ?Author $author = null;
+
+    #[ORM\ManyToOne(inversedBy: 'books')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Branch $branch = null;
+
+    public function __construct()
+    {
+        $this->comments = new ArrayCollection();
+        $this->lendings = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -136,5 +157,94 @@ class Book
         $this->language = $language;
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): static
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setBook($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): static
+    {
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getBook() === $this) {
+                $comment->setBook(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Lendings>
+     */
+    public function getLendings(): Collection
+    {
+        return $this->lendings;
+    }
+
+    public function addLending(Lendings $lending): static
+    {
+        if (!$this->lendings->contains($lending)) {
+            $this->lendings->add($lending);
+            $lending->setBook($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLending(Lendings $lending): static
+    {
+        if ($this->lendings->removeElement($lending)) {
+            // set the owning side to null (unless already changed)
+            if ($lending->getBook() === $this) {
+                $lending->setBook(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getAuthor(): ?Author
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?Author $author): static
+    {
+        $this->author = $author;
+
+        return $this;
+    }
+
+    public function getBranch(): ?Branch
+    {
+        return $this->branch;
+    }
+
+    public function setBranch(?Branch $branch): static
+    {
+        $this->branch = $branch;
+
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->getTitle();
     }
 }

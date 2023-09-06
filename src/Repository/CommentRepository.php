@@ -2,8 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\Book;
 use App\Entity\Comment;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -16,9 +18,41 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class CommentRepository extends ServiceEntityRepository
 {
+    const PAGINATOR_PER_PAGE = 2;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Comment::class);
+    }
+
+    public function getCommentPaginator(Book $book, int $offset): Paginator
+    {
+        $query=$this->createQueryBuilder('b')
+            ->andWhere('b.book = :book')
+            ->setParameter('book', $book)
+            ->orderBy('b.date', order: 'DESC')
+            ->setMaxResults(self::PAGINATOR_PER_PAGE)
+            ->setFirstResult($offset)
+            ->getQuery();
+        return new Paginator($query);
+    }
+
+    public function save(Comment $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+        if($flush)
+        {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function remove(Comment $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+        if($flush)
+        {
+            $this->getEntityManager()->flush();
+        }
     }
 
 //    /**
