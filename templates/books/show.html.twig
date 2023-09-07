@@ -1,5 +1,5 @@
 {% extends 'base.html.twig' %}
-{% import '@Symfony/Component/Intl/Twig/default.html.twig' as intl %}
+
 {% block title %} 
     Book - {{ book.title }}
 {% endblock %}
@@ -11,8 +11,8 @@
 
     {% if comments|length > 0 %}
         {% for comment in comments %}
-        
-            <small>{{ comment.date|format_datetime('medium', 'short') }}</small>
+            <p>{{ comment.author }}</p>
+            <small>{{ comment.date|date('Y-m-d') }}</small>
             <p>{{ comment.content }}</p>
         {% endfor %}
     {% else %}

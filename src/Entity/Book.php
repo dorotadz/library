@@ -3,8 +3,10 @@
 namespace App\Entity;
 
 use App\Repository\BookRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
@@ -30,8 +32,8 @@ class Book
     #[ORM\Column(nullable: true)]
     private ?int $pages = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $releaseDate = null;
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $releaseDate = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $genre = null;
@@ -123,12 +125,12 @@ class Book
         return $this;
     }
 
-    public function getReleaseDate(): ?int
+    public function getReleaseDate(): ?\DateTimeInterface
     {
         return $this->releaseDate;
     }
 
-    public function setReleaseDate(?int $releaseDate): static
+    public function setReleaseDate(?\DateTimeInterface $releaseDate): static
     {
         $this->releaseDate = $releaseDate;
 

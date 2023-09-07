@@ -6,6 +6,8 @@
 
 {% block body %}
 
+    <a href="{{ path('add_book') }}" class"btn btn-success">Add Book</a>
+
     {% for book in books %}
         <li> {{book}} </li>
     {% endfor %}

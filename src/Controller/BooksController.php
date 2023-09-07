@@ -4,9 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Book;
 use App\Entity\Comment;
+use App\Form\BookFormType;
 use App\Form\CommentFormType;
 use App\Repository\BookRepository;
 use App\Repository\CommentRepository;
+use DateTime;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -34,6 +36,27 @@ class BooksController extends AbstractController
         ]));
     }
 
+    #[Route('/add_book', name:'add_book')]
+    public function addBook(Request $request): Response
+    {
+        $book = new Book();
+        $form = $this->createForm(BookFormType::class, $book);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid())
+        {
+            $this->em->persist($book);
+            $this->em->flush();
+            
+            return $this->redirectToRoute('book_index');
+        }
+
+        return $this->render('books/add_book.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
     #[Route('/book/{id}', name: 'book')]
     public function show(
         Environment $twig,
@@ -41,12 +64,15 @@ class BooksController extends AbstractController
         CommentRepository $commentRepository,
         Request $request
     ): Response {
+
+        $createdAt = new DateTime();
         $comment = new Comment();
         $form = $this->createForm(CommentFormType::class, $comment);
 
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
+            $comment->setDate($createdAt);
             $comment->setBook($book);
 
             $this->em->persist($comment);
