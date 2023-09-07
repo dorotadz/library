@@ -6,6 +6,7 @@ use App\Entity\Author;
 use App\Entity\Book;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -19,7 +20,7 @@ class BookFormType extends AbstractType
             ->add('publisher', null, ['label' => 'Publisher'])
             ->add('issueNumber', null, ['label' => 'Issue Number'])
             ->add('pages', null, ['label' => 'No. of Pages'])
-            ->add('releaseDate', null, ['label' => 'Release Date'])
+            ->add('releaseDate', null, ['label' => 'Release Year'])
             ->add('genre', null, ['label' => 'Genre'])
             ->add('language', null, ['label' => 'Language'])
             ->add('author', EntityType::class, [

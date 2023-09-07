@@ -32,8 +32,8 @@ class Book
     #[ORM\Column(nullable: true)]
     private ?int $pages = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $releaseDate = null;
+    #[ORM\Column(nullable: true)]
+    private ?int $releaseDate = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $genre = null;
@@ -125,12 +125,12 @@ class Book
         return $this;
     }
 
-    public function getReleaseDate(): ?\DateTimeInterface
+    public function getReleaseDate(): ?int
     {
         return $this->releaseDate;
     }
 
-    public function setReleaseDate(?\DateTimeInterface $releaseDate): static
+    public function setReleaseDate(?int $releaseDate): static
     {
         $this->releaseDate = $releaseDate;
 
