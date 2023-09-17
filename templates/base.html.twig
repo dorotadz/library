@@ -2,6 +2,28 @@
 <html>
     <head>
         <meta charset="UTF-8">
+        <div style="background-color: AntiqueWhite; padding: 10px; width: 99%;
+        text-align: center;">
+        {% if app.user %}
+        <a style=" padding: 10px;">
+            Hello {{ app.user }}
+        </a>
+        {% else %}
+            <a href="{{ path('app_register') }}"
+            style=" padding: 10px;">
+                Register
+            </a>
+        {% endif %}
+        <a href="/{{ app.user ? 'logout' : 'login' }}"
+        style=" padding: 10px;">
+            {{ app.user ? 'Logout' : 'Login' }}
+        </a>
+        <a href="{{ path('books') }}"
+        style=" padding: 10px;">
+            Home page
+        </a>
+        </div>
+        <br/>
 
         {% block stylesheets %}
         {% endblock %}

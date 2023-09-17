@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Book;
 use App\Entity\Lendings;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -19,6 +20,15 @@ class LendingsRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Lendings::class);
+    }
+
+    public function findLendingsForBook(Book $book)
+    {
+        return $this->createQueryBuilder('l')
+        ->where('l.book = :book')
+        ->setParameter('book', $book)
+        ->getQuery()
+        ->getResult();
     }
 
 //    /**

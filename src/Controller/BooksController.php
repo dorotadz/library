@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Message\CommentMessage;
+use App\Repository\LendingsRepository;
 use Twig\Environment;
 
 class BooksController extends AbstractController
@@ -64,11 +65,14 @@ class BooksController extends AbstractController
         Environment $twig,
         Book $book,
         CommentRepository $commentRepository,
+        LendingsRepository $lendingsRepository,
         Request $request
     ): Response {
 
         $createdAt = new DateTime();
         $comment = new Comment();
+        $lendings = $lendingsRepository->findLendingsForBook($book);
+
         $form = $this->createForm(CommentFormType::class, $comment);
 
         $form->handleRequest($request);
@@ -100,6 +104,7 @@ class BooksController extends AbstractController
         return new Response($twig->render('books/show.html.twig', [
             'book' => $book,
             'comments' => $paginator,
+            'lendings' => $lendings,
             'previous' =>$offset - CommentRepository::PAGINATOR_PER_PAGE,
             'next' => min(count($paginator), $offset + CommentRepository::PAGINATOR_PER_PAGE),
             'comment_form' => $form->createView()
@@ -160,8 +165,11 @@ class BooksController extends AbstractController
         $lending->setUserId($this->getUser());
 
         $isAvailable = $this->isBookAvailable($book);
+        $date = new DateTime();
+
         if(!$isAvailable)
         {
+
             $date = $this->getAvailableDate($book);
             $lending->setFromDate($date);
         }
@@ -170,7 +178,7 @@ class BooksController extends AbstractController
             $lending->setFromDate(new DateTime());
         }
 
-        $toDate = new DateTime();
+        $toDate = clone $date;
         $toDate->modify('+14 days');
         $lending->setToDate($toDate);
 

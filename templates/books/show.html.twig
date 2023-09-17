@@ -4,11 +4,50 @@
     Book - {{ book.title }}
 {% endblock %}
 {% block body %}
+
     <h2> {{ book.title }} </h2>
+    <h3> {{ book.author }} </h3>
+    <p> {{ book.branch }} </p>
+    <p> {{ book.ISBN }} </p>
+    <p> {{ book.issueNumber}} </p>
+    <p> {{ book.publisher }} </p>
+    <p> {{ book.pages }} </p>
+    <p> {{ book.releaseDate }} </p>
+    <p> {{ book.genre }} </p>
+    <p> {{ book.language }} </p>
+
 
     <a href="{{  path('borrow_book', {'id': book.id}) }}">
         Reserve
     </a>
+
+    <h2> Reservations </h2>
+
+    <table style="width: 30%;">
+        <colgroup>
+            <col style="width: 15%;">
+            <col style="width: 15%;">
+        </colgroup>
+        <thead>
+            <tr>
+                <th>From</th>
+                <th>To</th>
+            </tr>
+        </thead>
+
+        <tbody style="text-align: center">
+            {% for lending in book.lendings %}
+            <tr> 
+                <td>
+                    {{ lending.fromDate|date('Y-m-d') }}
+                </td>
+                <td>
+                    {{ lending.toDate|date('Y-m-d') }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
     <h2>Add comment</h2>
     {{form(comment_form)}}
