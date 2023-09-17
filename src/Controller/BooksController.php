@@ -28,7 +28,7 @@ class BooksController extends AbstractController
         
     }
 
-    #[Route('/', name: 'books')]
+    #[Route('/books', name: 'books')]
     public function index(Environment $twig,
         BookRepository $bookRepository): Response
     {

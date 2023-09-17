@@ -7,6 +7,7 @@
 {% block body %}
 
     <a href="{{ path('add_book') }}" class"btn btn-success">Add Book</a>
+    <a href="{{ path('add_author') }}" class"btn btn-success">Add Author</a>
 
     <table style="width: 100%;">
         <colgroup>
@@ -25,7 +26,9 @@
         <tbody>
             {% for book in books %}
             <tr> 
-                <td>{{ book.title }}</td>
+                <td>
+                    <a href="{{ path('book', {'id': book.id}) }}">{{ book.title }}</a>
+                </td>
                 <td>{{ book.author }}</td>
                 <td style="text-align: center">
                     <a href="{{ path('edit_book', {'id':book.id}) }}"

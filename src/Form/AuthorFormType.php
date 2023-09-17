@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Author;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -14,6 +15,9 @@ class AuthorFormType extends AbstractType
         $builder
             ->add('firstName')
             ->add('lastName')
+            ->add('DOB',DateType::class, [
+                'years' => range(date('Y') - 1000, date('Y')),
+            ])
         ;
     }
 

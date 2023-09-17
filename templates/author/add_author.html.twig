@@ -1,0 +1,25 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+    Add new author
+{% endblock %}
+
+{% block body %}
+    <h1>Add new author</h1>
+
+    {{ form_start(form) }}
+    <br>
+    {{ form_label(form.firstName) }}
+    {{ form_widget(form.firstName) }}
+    </br>
+    <br>
+    {{ form_label(form.lastName) }}
+    {{ form_widget(form.lastName) }}
+    </br>
+    <br>
+    {{ form_label(form.DOB, 'Date of Birth') }}
+    {{ form_widget(form.DOB) }}
+    </br>
+    <button type="submit" class="btn btn-primary">Add</button>
+    {{ form_end(form) }}
+{% endblock %}
