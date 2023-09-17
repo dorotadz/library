@@ -6,7 +6,11 @@
 {% block body %}
     <h2> {{ book.title }} </h2>
 
-    <h2>add comment</h2>
+    <a href="{{  path('borrow_book', {'id': book.id}) }}">
+        Reserve
+    </a>
+
+    <h2>Add comment</h2>
     {{form(comment_form)}}
 
     {% if comments|length > 0 %}

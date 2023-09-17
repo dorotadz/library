@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Book;
 use App\Entity\Comment;
+use App\Entity\Lendings;
 use App\Form\BookEditType;
 use App\Form\BookFormType;
 use App\Form\CommentFormType;
@@ -28,7 +29,7 @@ class BooksController extends AbstractController
         
     }
 
-    #[Route('/books', name: 'books')]
+    #[Route('/', name: 'books')]
     public function index(Environment $twig,
         BookRepository $bookRepository): Response
     {
@@ -142,5 +143,69 @@ class BooksController extends AbstractController
         $this->em->flush();
 
         return $this->redirectToRoute('books');
+    }
+
+    #[Route('/book/{id}/borrow', name:'borrow_book')]
+    public function borrowBook(Request $request, $id)
+    {
+        $book =  $this->em->getRepository(Book::class)->find($id);
+
+        if(!$this->getUser())
+        {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $lending = new Lendings();
+        $lending->setBook($book);
+        $lending->setUserId($this->getUser());
+
+        $isAvailable = $this->isBookAvailable($book);
+        if(!$isAvailable)
+        {
+            $date = $this->getAvailableDate($book);
+            $lending->setFromDate($date);
+        }
+        else
+        {
+            $lending->setFromDate(new DateTime());
+        }
+
+        $toDate = new DateTime();
+        $toDate->modify('+14 days');
+        $lending->setToDate($toDate);
+
+        $this->em->persist($lending);
+        $this->em->flush();
+
+        return $this->redirectToRoute('book', ['id' => $id]);
+    }
+
+    private function isBookAvailable(Book $book) : bool
+    {
+        $today = new DateTime();
+        foreach($book->getLendings() as $lending)
+        {
+            if($today >= $lending->getFromDate() && $today <= $lending->getToDate())
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private function getAvailableDate(Book $book)
+    {
+        $latest = $book->getLatestLending();
+
+        if($latest)
+        {
+            $date = clone $latest;
+            $date->modify('+1 day');
+        }
+        else
+        {
+            $date = new DateTime();
+        }
+        return $date;
     }
 }

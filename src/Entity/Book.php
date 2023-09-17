@@ -249,4 +249,18 @@ class Book
     {
         return $this->getTitle();
     }
+
+    public function getLatestLending() : DateTime
+    {
+        $latest = null;
+        foreach($this->lendings as $lending)
+        {
+            if(!$latest || $lending->getToDate() > $latest->getToDate())
+            {
+                $latest = $lending;
+            }
+        }
+
+        return $latest->getToDate();
+    }
 }
