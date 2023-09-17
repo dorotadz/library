@@ -8,8 +8,12 @@
 
     
     {% if is_granted('ROLE_ADMIN_LIBRARY') %}
-        <a href="{{ path('add_book') }}" class"btn btn-success">Add Book</a>
-        <a href="{{ path('add_author') }}" class"btn btn-success">Add Author</a>
+        <form method="GET" action="{{ path('add_book') }}">
+            <button type="submit">Add Book</button>
+        </form>
+        <form method="GET" action="{{ path('add_author') }}">
+            <button type="submit">Add Author</button>
+        </form>
     {% endif %}
 
     <table style="width: 100%;">
