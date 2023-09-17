@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Book;
 use App\Entity\Comment;
+use App\Form\BookEditType;
 use App\Form\BookFormType;
 use App\Form\CommentFormType;
 use App\Repository\BookRepository;
@@ -49,7 +50,7 @@ class BooksController extends AbstractController
             $this->em->persist($book);
             $this->em->flush();
             
-            return $this->redirectToRoute('book_index');
+            return $this->redirectToRoute('books');
         }
 
         return $this->render('books/add_book.html.twig', [
@@ -102,5 +103,44 @@ class BooksController extends AbstractController
             'next' => min(count($paginator), $offset + CommentRepository::PAGINATOR_PER_PAGE),
             'comment_form' => $form->createView()
         ]));
+    }
+
+    #[Route('/book/edit/{id}', name:'edit_book')]
+    public function edit(Request $request, $id) : Response
+    {      
+        $book = $this->em->getRepository(Book::class)->find($id);
+
+        $form =  $this->createForm(BookEditType::class, $book);
+
+        $form->handleRequest($request);
+    
+
+        if($form->isSubmitted() && $form->isValid())
+        {
+            $this->em->persist($book);
+            $this->em->flush();
+
+            return $this->redirectToRoute('books');
+        }
+
+        return$this->render('books/edit_book.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/book/delete/{id}', name:'delete_book')]
+    public function deleteBook($id) : Response
+    {      
+        $book = $this->em->getRepository(Book::class)->find($id);
+
+        if(!$book)
+        {
+            throw $this->createNotFoundException('This book does not exist.');
+        }
+
+        $this->em->remove($book);
+        $this->em->flush();
+
+        return $this->redirectToRoute('books');
     }
 }
