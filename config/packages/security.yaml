@@ -35,8 +35,12 @@ security:
         ROLE_USER: [ROLE_ANONYMOUS, IS_AUTHENTICATED_REMEMBERED]
         ROLE_ADMIN_LIBRARY: [ROLE_USER, ROLE_ADMIN]
     access_control:
+         - { path: ^/add_book, roles: ROLE_ADMIN_LIBRARY}
+         - { path: ^/edit_book, roles: ROLE_ADMIN_LIBRARY}
+         - { path: ^/add_author, roles: ROLE_ADMIN_LIBRARY}
          - { path: ^/admin, roles: ROLE_ADMIN_LIBRARY }
          - { path: ^/profile, roles: ROLE_USER }
+    access_denied_url: /
 
 when@test:
     security:

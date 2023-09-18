@@ -27,7 +27,7 @@ class BookFormType extends AbstractType
                 'class' => Author::class,
                 'choice_label' => function ($author)
                 {
-                    return $author->getFirstName() . ' ' . $author->getLastName(); 
+                    return $author->getLastName() . ' ' . $author->getFirstName(); 
                 },
             ])
             ->add('branch')

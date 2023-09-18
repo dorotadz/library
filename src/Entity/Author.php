@@ -106,6 +106,6 @@ class Author
 
     public function __toString()
     {
-        return $this->getFirstName() . ' ' . $this->getLastName();
+        return $this->getLastName() . ' ' . $this->getFirstName();
     }
 }
